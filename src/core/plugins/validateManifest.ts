@@ -9,7 +9,7 @@ export interface ValidationResult {
 }
 
 const VALID_TYPES = ["data-layer", "extension"] as const;
-const VALID_TRUSTS = ["built-in", "verified", "unverified"] as const;
+const VALID_TRUSTS = ["built-in", "verified", "unverified", "developer"] as const;
 
 export function validateManifest(
     manifest: Partial<PluginManifest>,

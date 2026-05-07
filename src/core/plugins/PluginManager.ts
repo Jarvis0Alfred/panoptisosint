@@ -222,6 +222,47 @@ class PluginManager {
         return this.loadedManifests.get(pluginId);
     }
 
+    /**
+     * Hot-reloads a plugin (destroys, cache-busts entry, re-registers).
+     * Used exclusively during developer mode when files change on disk.
+     */
+    async hotReload(pluginId: string): Promise<void> {
+        const managed = this.plugins.get(pluginId);
+        if (!managed) return;
+        
+        const wasEnabled = managed.enabled;
+        const manifest = this.loadedManifests.get(pluginId);
+        if (!manifest) return;
+        
+        // 1. Destroy old instance
+        try { managed.plugin.destroy(); } catch {}
+        pollingManager.stop(pluginId);
+        this.plugins.delete(pluginId);
+        
+        // 2. Cache-bust and re-import
+        const bustEntry = `${manifest.entry}?t=${Date.now()}`;
+        const newManifest = { ...manifest, entry: bustEntry };
+        
+        // 3. Re-register
+        try {
+            const plugin = await loadPluginFromManifest(newManifest);
+            if (manifest.id && plugin.id !== manifest.id) {
+                plugin.id = manifest.id;
+            }
+            this.loadedManifests.set(manifest.id, newManifest);
+            await this.registerPlugin(plugin);
+            
+            // 4. Restore state
+            if (wasEnabled) {
+                await this.enablePlugin(pluginId);
+            }
+            
+            console.log(`[PluginManager] 🔄 Hot-reloaded "${pluginId}"`);
+        } catch (err) {
+            console.error(`[PluginManager] ❌ Failed to hot-reload "${pluginId}":`, err);
+        }
+    }
+
     destroy(): void {
         pollingManager.stopAll();
         this.plugins.forEach((managed) => {

@@ -104,10 +104,10 @@ Visibility Toggle → DataBusSubscriber subscribes to layer via WsClient
 Four plugin architectures exist (All-Bundle Model):
 1. **Data Engine Seeder** — Standalone Fastify container with SQLite microservice or unified seeders (e.g., `iranwarlive-backend`).
 2. **Dynamic CDN Loaded (Bundle)** — Externally developed plugins dynamically imported at runtime via ES module CDNs (e.g., `unpkg.com` version-pinned URLs).
-3. **Static Compiled (Bundle)** — Static GeoJSON data wrapped into JS bundles via `wwvStaticCompiler` during build/sync (previously `StaticDataPlugin`).
-4. **Active Proxied (Bundle)** — Next.js API routes bundled to provide frontend interactions (previously `DeclarativePlugin`).
+3. **WWV CLI Unpacked (Dev)** — Developed externally using `@worldwideview/cli dev`, which spins up a local Vite server and hot-reloads via WebSocket injection directly into the running platform.
+4. **Marketplace Package (.wwvpkg)** — Built via `@worldwideview/cli publish` and distributed through the WorldWideView Marketplace.
 
-All plugins are now dynamically imported at runtime as ES module bundles via `loadPluginFromManifest` utilizing `import(/* webpackIgnore: true */ entry)`. The legacy `StaticDataPlugin` and `DeclarativePlugin` runtimes are fully deprecated.
+All plugins are now dynamically imported at runtime as ES module bundles via `loadPluginFromManifest` utilizing `import(/* webpackIgnore: true */ entry)`. The plugin passport is defined in `wwv-manifest.json` which governs its trust tier (`developer`, `unverified`, `verified`, `built-in`) and capabilities.
 
 Plugin types are re-exported from SDK through `src/core/plugins/PluginTypes.ts` and `PluginManifest.ts` — **source of truth is always `@worldwideview/wwv-plugin-sdk`**.
 

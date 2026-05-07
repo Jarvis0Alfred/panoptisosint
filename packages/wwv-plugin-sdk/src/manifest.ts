@@ -6,7 +6,7 @@ import type { PluginCategory } from "./index";
 
 export type PluginFormat = "declarative" | "static" | "bundle";
 export type PluginType = "data-layer" | "extension";
-export type TrustTier = "built-in" | "verified" | "unverified";
+export type TrustTier = "built-in" | "verified" | "unverified" | "developer";
 
 export type PluginCapability =
     | "data:own"

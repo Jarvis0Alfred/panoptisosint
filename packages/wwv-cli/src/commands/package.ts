@@ -3,7 +3,7 @@ import path from "path";
 import { build } from "vite";
 import archiver from "archiver";
 
-export async function buildPackage() {
+export async function packagePlugin() {
     const cwd = process.cwd();
     const manifestPath = path.join(cwd, "wwv-manifest.json");
     
@@ -53,5 +53,5 @@ export async function buildPackage() {
     });
 
     console.log(`\n🎉 Success! Package created at ${outputPath}`);
-    console.log(`You can now upload this file to the WorldWideView Marketplace.`);
+    console.log(`You can use this file to sideload the plugin into your WWV instance.`);
 }
