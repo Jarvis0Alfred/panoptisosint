@@ -21,4 +21,19 @@ program
       }
   });
 
+import { startDevServer } from "./commands/dev";
+
+program
+  .command("dev")
+  .description("Start the plugin development server with hot-reload")
+  .option("-t, --target <url>", "Target WorldWideView URL", "http://localhost:3000")
+  .action(async (options) => {
+      try {
+          await startDevServer(options.target);
+      } catch (err: any) {
+          console.error("Error:", err.message);
+          process.exit(1);
+      }
+  });
+
 program.parse();
