@@ -36,4 +36,18 @@ program
       }
   });
 
+import { buildPackage } from "./commands/publish";
+
+program
+  .command("publish")
+  .description("Build and package the plugin into a .wwvpkg file")
+  .action(async () => {
+      try {
+          await buildPackage();
+      } catch (err: any) {
+          console.error("Error:", err.message);
+          process.exit(1);
+      }
+  });
+
 program.parse();
