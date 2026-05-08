@@ -12,10 +12,25 @@ import { isDemo } from "@/core/edition";
  */
 export default async function proxy(req: NextRequest) {
     const path = req.nextUrl.pathname;
+    
+    // Extract subdomain if on cloud
+    const hostname = req.headers.get("host") || "";
+    let tenantSubdomain = null;
+    if (process.env.NEXT_PUBLIC_WWV_EDITION === "cloud") {
+        const isApp = hostname.includes(".app.worldwideview.dev") || hostname.includes(".localhost");
+        if (isApp) {
+            const subdomain = hostname.replace(".app.worldwideview.dev", "").replace(".localhost", "").split(":")[0];
+            if (subdomain && subdomain !== "app" && subdomain !== "localhost") {
+                tenantSubdomain = subdomain;
+            }
+        }
+    }
 
     // Demo edition: fully public, no auth required
     if (isDemo) {
-        return NextResponse.next();
+        const res = NextResponse.next();
+        if (tenantSubdomain) res.headers.set("x-tenant-subdomain", tenantSubdomain);
+        return res;
     }
 
     // Static assets, API routes, data files — always pass through
@@ -26,12 +41,16 @@ export default async function proxy(req: NextRequest) {
         path.startsWith("/cesium") ||
         path.includes(".")
     ) {
-        return NextResponse.next();
+        const res = NextResponse.next();
+        if (tenantSubdomain) res.headers.set("x-tenant-subdomain", tenantSubdomain);
+        return res;
     }
 
     // Auth pages — always accessible
     if (path.startsWith("/setup") || path.startsWith("/login")) {
-        return NextResponse.next();
+        const res = NextResponse.next();
+        if (tenantSubdomain) res.headers.set("x-tenant-subdomain", tenantSubdomain);
+        return res;
     }
 
     // Check JWT session from Auth.js cookie
@@ -42,7 +61,9 @@ export default async function proxy(req: NextRequest) {
 
     if (token) {
         // User is logged in — allow through
-        return NextResponse.next();
+        const res = NextResponse.next();
+        if (tenantSubdomain) res.headers.set("x-tenant-subdomain", tenantSubdomain);
+        return res;
     }
 
     // Not logged in — check if first-run (no users)

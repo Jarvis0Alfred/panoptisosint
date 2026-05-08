@@ -104,9 +104,9 @@ export async function POST(request: Request) {
         return withCors(
             NextResponse.json({
                 status: "installed",
-                pluginId: record.pluginId,
-                version: record.version,
-                installedAt: record.installedAt,
+                pluginId: record!.pluginId,
+                version: record!.version,
+                installedAt: record!.installedAt,
             }),
             request,
         );

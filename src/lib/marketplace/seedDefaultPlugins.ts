@@ -33,7 +33,7 @@ export async function seedDefaultPlugins(): Promise<void> {
         }
 
         // Idempotent guard — already seeded?
-        const guard = await prisma.setting.findUnique({
+        const guard = await prisma.setting.findFirst({
             where: { key: "defaults_seeded" },
         });
         if (guard) return;
@@ -127,9 +127,15 @@ async function fetchManifest(
 
 /** Write the idempotent guard row. */
 async function markSeeded(): Promise<void> {
-    await prisma.setting.upsert({
-        where: { key: "defaults_seeded" },
-        update: { value: "true" },
-        create: { key: "defaults_seeded", value: "true" },
-    });
+    const existing = await prisma.setting.findFirst({ where: { key: "defaults_seeded" } });
+    if (existing) {
+        await prisma.setting.updateMany({
+            where: { key: "defaults_seeded" },
+            data: { value: "true" },
+        });
+    } else {
+        await prisma.setting.create({
+            data: { key: "defaults_seeded", value: "true" },
+        });
+    }
 }

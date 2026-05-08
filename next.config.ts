@@ -52,7 +52,13 @@ const nextConfig: NextConfig = {
   },
 
   outputFileTracingExcludes: {
-    "*": ["./public/cesium/**"],
+    "*": [
+      "./public/cesium/**",
+      ...(process.env.NEXT_PUBLIC_WWV_EDITION === "cloud" ? [
+        "**/node_modules/better-sqlite3/**",
+        "**/node_modules/@prisma/adapter-better-sqlite3/**"
+      ] : [])
+    ],
   },
   env: {
     CESIUM_BASE_URL: "/cesium",

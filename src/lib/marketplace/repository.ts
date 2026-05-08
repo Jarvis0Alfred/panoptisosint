@@ -9,23 +9,30 @@ export async function getInstalledPlugins() {
 
 /** Check if a plugin is already installed. */
 export async function isInstalled(pluginId: string): Promise<boolean> {
-    const record = await prisma.installedPlugin.findUnique({ where: { pluginId } });
+    const record = await prisma.installedPlugin.findFirst({ where: { pluginId } });
     return record !== null;
 }
 
 /** Install or update a plugin record. Uses upsert on the unique pluginId. */
 export async function upsertPlugin(pluginId: string, version: string, config?: string) {
-    return prisma.installedPlugin.upsert({
-        where: { pluginId },
-        update: { version, config: config ?? undefined, enabled: true },
-        create: { pluginId, version, config: config ?? "{}", enabled: true },
-    });
+    const existing = await prisma.installedPlugin.findFirst({ where: { pluginId } });
+    if (existing) {
+        await prisma.installedPlugin.updateMany({
+            where: { pluginId },
+            data: { version, config: config ?? undefined, enabled: true },
+        });
+        return prisma.installedPlugin.findFirst({ where: { pluginId } });
+    } else {
+        return prisma.installedPlugin.create({
+            data: { pluginId, version, config: config ?? "{}", enabled: true },
+        });
+    }
 }
 
 /** Remove an installed plugin record. Returns 0 or 1. */
 export async function uninstallPlugin(pluginId: string) {
     try {
-        await prisma.installedPlugin.delete({ where: { pluginId } });
+        await prisma.installedPlugin.deleteMany({ where: { pluginId } });
         return 1;
     } catch {
         return 0;
@@ -34,16 +41,23 @@ export async function uninstallPlugin(pluginId: string) {
 
 /** Disable a plugin (built-in or marketplace) without removing its record. */
 export async function disablePlugin(pluginId: string) {
-    return prisma.installedPlugin.upsert({
-        where: { pluginId },
-        update: { enabled: false },
-        create: { pluginId, version: "built-in", config: "{}", enabled: false },
-    });
+    const existing = await prisma.installedPlugin.findFirst({ where: { pluginId } });
+    if (existing) {
+        await prisma.installedPlugin.updateMany({
+            where: { pluginId },
+            data: { enabled: false },
+        });
+        return prisma.installedPlugin.findFirst({ where: { pluginId } });
+    } else {
+        return prisma.installedPlugin.create({
+            data: { pluginId, version: "built-in", config: "{}", enabled: false },
+        });
+    }
 }
 
 /** Re-enable a disabled plugin. */
 export async function enablePlugin(pluginId: string) {
-    return prisma.installedPlugin.update({
+    return prisma.installedPlugin.updateMany({
         where: { pluginId },
         data: { enabled: true },
     });

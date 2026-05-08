@@ -2,6 +2,8 @@
 
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
+import { isCloud } from "@/core/edition";
+import { createClient } from "@supabase/supabase-js";
 
 interface LoginResult {
     success: boolean;
@@ -9,23 +11,40 @@ interface LoginResult {
 }
 
 export async function loginAction(formData: FormData): Promise<LoginResult> {
-    try {
-        await signIn("credentials", {
-            email: formData.get("email") as string,
-            password: formData.get("password") as string,
-            redirect: false,
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (isCloud) {
+        // Use Supabase GoTrue
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
         });
+        
+        if (error) return { success: false, error: error.message };
         return { success: true };
-    } catch (error) {
-        if (error instanceof AuthError) {
-            return {
-                success: false,
-                error: error.type === "CredentialsSignin"
-                    ? "Invalid email or password."
-                    : "Something went wrong.",
-            };
+    } else {
+        try {
+            await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
+            });
+            return { success: true };
+        } catch (error) {
+            if (error instanceof AuthError) {
+                return {
+                    success: false,
+                    error: error.type === "CredentialsSignin"
+                        ? "Invalid email or password."
+                        : "Something went wrong.",
+                };
+            }
+            throw error;
         }
-        throw error;
     }
 }
-
