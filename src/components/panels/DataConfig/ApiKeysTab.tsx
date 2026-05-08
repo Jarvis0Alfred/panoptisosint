@@ -8,7 +8,8 @@ import {
 } from "@/lib/userApiKeys";
 import { sectionHeaderStyle, inputGroupStyle, labelStyle } from "./sharedStyles";
 import ReloadToast from "@/components/ui/ReloadToast";
-
+import { useStore } from "@/core/state/store";
+import { verifyLicenseKey } from "@/core/license/verifyLicense";
 type VerifyStatus = "idle" | "verifying" | "valid" | "invalid";
 
 const keyInputStyle: React.CSSProperties = {
@@ -58,6 +59,14 @@ export function ApiKeysTab() {
         });
         return initial;
     });
+
+    const licenseKey = useStore((s) => s.dataConfig.licenseKey);
+    const activeTier = useStore((s) => s.dataConfig.activeTier);
+    const updateDataConfig = useStore((s) => s.updateDataConfig);
+
+    const [licenseInput, setLicenseInput] = useState(licenseKey || "");
+    const [licenseStatus, setLicenseStatus] = useState<VerifyStatus>("idle");
+    const [licenseError, setLicenseError] = useState("");
 
     const [visible, setVisible] = useState<Record<string, boolean>>({});
     const [status, setStatus] = useState<Record<string, VerifyStatus>>({});
@@ -127,11 +136,89 @@ export function ApiKeysTab() {
         setErrors({});
     }, []);
 
+    const handleVerifyLicense = useCallback(async () => {
+        if (!licenseInput) return;
+        setLicenseStatus("verifying");
+        setLicenseError("");
+        const payload = await verifyLicenseKey(licenseInput);
+        if (payload) {
+            setLicenseStatus("valid");
+            updateDataConfig({ licenseKey: licenseInput, activeTier: payload.tier });
+        } else {
+            setLicenseStatus("invalid");
+            setLicenseError("Invalid or expired license key");
+            updateDataConfig({ licenseKey: null, activeTier: "free" });
+        }
+    }, [licenseInput, updateDataConfig]);
+
+    const handleClearLicense = useCallback(() => {
+        setLicenseInput("");
+        setLicenseStatus("idle");
+        setLicenseError("");
+        updateDataConfig({ licenseKey: null, activeTier: "free" });
+    }, [updateDataConfig]);
+
     const hasAnyKey = Object.values(keys).some((v) => v.length > 0);
 
     return (
         <>
             <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+            <div style={{ marginBottom: "var(--space-lg)" }}>
+                <div style={sectionHeaderStyle}>
+                    <Key size={10} style={{ marginRight: 4, verticalAlign: "middle" }} />
+                    License Key
+                </div>
+                <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: "var(--space-md)" }}>
+                    Current Tier: <strong style={{ color: "var(--text-primary)", textTransform: "capitalize" }}>{activeTier}</strong>
+                </div>
+
+                <div style={{ marginBottom: "var(--space-md)" }}>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                        <input
+                            type="password"
+                            value={licenseInput}
+                            placeholder="eyJhbGciOiJSUzI1NiI..."
+                            onChange={(e) => setLicenseInput(e.target.value)}
+                            style={{ 
+                                ...keyInputStyle, 
+                                border: `1px solid ${licenseStatus === "valid" ? "rgba(34,197,94,0.5)" : licenseStatus === "invalid" ? "rgba(239,68,68,0.5)" : "var(--border-subtle)"}` 
+                            }}
+                            spellCheck={false}
+                            autoComplete="off"
+                        />
+                        <StatusIcon status={licenseStatus} />
+                        <button
+                            onClick={handleVerifyLicense}
+                            disabled={!licenseInput || licenseStatus === "verifying"}
+                            title="Verify license"
+                            style={{
+                                ...toggleBtnStyle,
+                                color: licenseStatus === "valid" ? "#22c55e" : licenseStatus === "invalid" ? "#ef4444" : "var(--text-muted)",
+                                opacity: (!licenseInput || licenseStatus === "verifying") ? 0.4 : 1,
+                                cursor: (!licenseInput || licenseStatus === "verifying") ? "not-allowed" : "pointer",
+                            }}
+                        >
+                            <ShieldCheck size={14} />
+                        </button>
+                        {licenseInput && (
+                            <button
+                                style={toggleBtnStyle}
+                                onClick={handleClearLicense}
+                                title="Clear License"
+                            >
+                                <Trash2 size={14} />
+                            </button>
+                        )}
+                    </div>
+                    {licenseStatus === "invalid" && licenseError && (
+                        <div style={{ fontSize: 10, color: "#ef4444", marginTop: 3 }}>{licenseError}</div>
+                    )}
+                    {licenseStatus === "valid" && (
+                        <div style={{ fontSize: 10, color: "#22c55e", marginTop: 3 }}>License verified ✓</div>
+                    )}
+                </div>
+            </div>
+
             <div style={{ marginBottom: "var(--space-lg)" }}>
                 <div style={sectionHeaderStyle}>
                     <Key size={10} style={{ marginRight: 4, verticalAlign: "middle" }} />

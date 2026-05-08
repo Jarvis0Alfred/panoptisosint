@@ -15,6 +15,8 @@ export interface DataConfig {
         showTimelineHighlight: boolean;
     };
     pluginSettings: Record<string, any>;
+    licenseKey: string | null;
+    activeTier: "free" | "pro" | "team" | "enterprise";
 }
 
 export type AntiAliasingMode = "none" | "fxaa" | "msaa2x" | "msaa4x" | "msaa8x";
@@ -54,6 +56,8 @@ export const createConfigSlice: StateCreator<AppStore, [], [], ConfigSlice> = (s
             showTimelineHighlight: true,
         },
         pluginSettings: {},
+        licenseKey: null,
+        activeTier: "free",
     },
     mapConfig: {
         showFps: false,
