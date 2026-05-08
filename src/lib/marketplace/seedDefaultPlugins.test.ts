@@ -4,13 +4,18 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // Mocks — must be declared before importing the module under test
 // ---------------------------------------------------------------------------
 
-const mockFindUnique = vi.fn();
+const mockFindFirst = vi.fn();
 const mockCount = vi.fn();
-const mockUpsert = vi.fn();
+const mockUpdateMany = vi.fn();
+const mockCreate = vi.fn();
 
 vi.mock("../db", () => ({
     prisma: {
-        setting: { findUnique: (...a: any[]) => mockFindUnique(...a), upsert: (...a: any[]) => mockUpsert(...a) },
+        setting: {
+            findFirst: (...a: any[]) => mockFindFirst(...a),
+            updateMany: (...a: any[]) => mockUpdateMany(...a),
+            create: (...a: any[]) => mockCreate(...a),
+        },
         installedPlugin: { count: (...a: any[]) => mockCount(...a) },
     },
 }));
@@ -65,12 +70,13 @@ describe("seedDefaultPlugins", () => {
         delete process.env.WWV_SKIP_DEFAULT_PLUGINS;
 
         // Defaults: not seeded, no existing plugins, manifests valid
-        mockFindUnique.mockResolvedValue(null);
+        mockFindFirst.mockResolvedValue(null);
         mockCount.mockResolvedValue(0);
         mockGetVerifiedPluginIds.mockResolvedValue(new Set(DEFAULT_PLUGIN_IDS));
         mockValidateManifest.mockReturnValue({ valid: true, errors: [] });
         mockUpsertPlugin.mockResolvedValue({});
-        mockUpsert.mockResolvedValue({});
+        mockCreate.mockResolvedValue({});
+        mockUpdateMany.mockResolvedValue({});
 
         mockFetch.mockImplementation(async (url: string) => ({
             ok: true,
@@ -94,16 +100,15 @@ describe("seedDefaultPlugins", () => {
         }
 
         // Guard row written
-        expect(mockUpsert).toHaveBeenCalledWith(
+        expect(mockCreate).toHaveBeenCalledWith(
             expect.objectContaining({
-                where: { key: "defaults_seeded" },
-                create: { key: "defaults_seeded", value: "true" },
+                data: { key: "defaults_seeded", value: "true" },
             }),
         );
     });
 
     it("skips immediately when already seeded", async () => {
-        mockFindUnique.mockResolvedValue({ key: "defaults_seeded", value: "true" });
+        mockFindFirst.mockResolvedValue({ key: "defaults_seeded", value: "true" });
 
         await seedDefaultPlugins();
 
@@ -118,9 +123,9 @@ describe("seedDefaultPlugins", () => {
 
         expect(mockUpsertPlugin).not.toHaveBeenCalled();
         // Guard row still written
-        expect(mockUpsert).toHaveBeenCalledWith(
+        expect(mockCreate).toHaveBeenCalledWith(
             expect.objectContaining({
-                where: { key: "defaults_seeded" },
+                data: { key: "defaults_seeded", value: "true" },
             }),
         );
     });
@@ -133,7 +138,7 @@ describe("seedDefaultPlugins", () => {
         // Should NOT throw
         expect(mockUpsertPlugin).not.toHaveBeenCalled();
         // Guard row still written (fail-safe)
-        expect(mockUpsert).toHaveBeenCalled();
+        expect(mockCreate).toHaveBeenCalled();
     });
 
     it("skips when WWV_SKIP_DEFAULT_PLUGINS=true", async () => {
@@ -144,7 +149,7 @@ describe("seedDefaultPlugins", () => {
         expect(mockUpsertPlugin).not.toHaveBeenCalled();
         expect(mockFetch).not.toHaveBeenCalled();
         // Guard row written so it doesn't re-check
-        expect(mockUpsert).toHaveBeenCalled();
+        expect(mockCreate).toHaveBeenCalled();
     });
 
     it("skips entirely on demo edition", async () => {
@@ -154,7 +159,7 @@ describe("seedDefaultPlugins", () => {
 
         expect(mockUpsertPlugin).not.toHaveBeenCalled();
         expect(mockFetch).not.toHaveBeenCalled();
-        expect(mockUpsert).not.toHaveBeenCalled();
+        expect(mockCreate).not.toHaveBeenCalled();
     });
 
     it("skips individual plugins with invalid manifests", async () => {
