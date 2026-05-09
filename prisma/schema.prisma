@@ -3,7 +3,7 @@
 // Cloud/Production: set DATABASE_URL to your Supabase/Postgres connection string.
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 generator client {
