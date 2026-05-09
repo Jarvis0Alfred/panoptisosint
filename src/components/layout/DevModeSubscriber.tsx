@@ -35,8 +35,14 @@ export function DevModeSubscriber() {
                         await pluginManager.enablePlugin(data.manifest.id);
                         
                     } else if (data.type === "plugin:updated") {
-                        console.log(`[DevMode] Hot reloading plugin: ${data.pluginId}`);
-                        await pluginManager.hotReload(data.pluginId);
+                        console.log(`[DevMode] Reloading plugin: ${data.pluginId}`);
+                        // Destroy and re-load from manifest for dev hot-reload
+                        pluginManager.disablePlugin(data.pluginId);
+                        if (data.manifest) {
+                            await pluginManager.loadFromManifest(data.manifest);
+                            initLayer(data.manifest.id, true);
+                            await pluginManager.enablePlugin(data.manifest.id);
+                        }
                         
                     } else if (data.type === "plugin:error") {
                         console.error(`[DevMode] Dev Server Build Error: ${data.error}`);

@@ -42,6 +42,7 @@
   "exclude": [
     "node_modules",
     "scripts",
+    "local-scripts",
     "packages/wwv-data-engine",
     "packages/*/backend",
     "worldmonitor",

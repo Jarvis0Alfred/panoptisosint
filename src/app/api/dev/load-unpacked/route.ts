@@ -24,8 +24,7 @@ export async function POST(request: Request) {
     if (process.env.NODE_ENV !== "development") {
         return NextResponse.json(
             { error: "Developer mode is only available in development environments" },
-            { status: 403 },
-            { headers: { "Access-Control-Allow-Origin": "*" } }
+            { status: 403, headers: { "Access-Control-Allow-Origin": "*" } }
         );
     }
 
@@ -35,28 +34,26 @@ export async function POST(request: Request) {
         // Convert wwv-manifest.json format to PluginManifest format
         const manifest = parseWwvManifest(body);
         
-        // Ensure trust is developer
-        manifest.trust = "developer";
+        // Dev-loaded plugins are unverified by default
+        manifest.trust = "unverified";
 
         const validation = validateManifest(manifest);
         if (!validation.valid) {
             return NextResponse.json(
                 { error: "Invalid manifest", details: validation.errors },
-                { status: 400 },
-                { headers: { "Access-Control-Allow-Origin": "*" } }
+                { status: 400, headers: { "Access-Control-Allow-Origin": "*" } }
             );
         }
 
         return NextResponse.json(
             { status: "loaded", manifest },
-            { headers: { "Access-Control-Allow-Origin": "*" } }
+            { status: 200, headers: { "Access-Control-Allow-Origin": "*" } }
         );
     } catch (err) {
         console.error("[Load Unpacked] Error:", err);
         return NextResponse.json(
             { error: "Failed to parse or load unpacked manifest" },
-            { status: 500 },
-            { headers: { "Access-Control-Allow-Origin": "*" } }
+            { status: 500, headers: { "Access-Control-Allow-Origin": "*" } }
         );
     }
 }

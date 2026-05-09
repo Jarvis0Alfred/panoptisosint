@@ -16,7 +16,7 @@ export function parseWwvManifest(rawManifest: any): PluginManifest {
         description: rawManifest.description,
         type: rawManifest.type || "data-layer",
         format: "bundle", // wwv-manifest plugins are always bundles
-        trust: "developer", // Will be overridden if fetched from marketplace
+        trust: "unverified", // Will be overridden if fetched from marketplace
         capabilities: rawManifest.capabilities || [],
         category: rawManifest.category || "custom",
         icon: rawManifest.icon,
