@@ -8,7 +8,7 @@ RUN find . -type f \! -name 'package.json' \! -name 'pnpm-workspace.yaml' \! -na
 # Stage 1: Install ALL dependencies (needed for build)
 FROM node:22-alpine AS deps
 RUN npm install -g pnpm@9.15.0
-RUN apk add --no-cache python3 make g++
+# python3/make/g++ no longer needed — removed better-sqlite3 native compilation
 WORKDIR /app
 # Copy only the extracted package.jsons
 COPY --from=extractor /app ./
@@ -33,9 +33,8 @@ ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 # Run our pregenerate schema swap script and then generate Prisma client
 RUN NEXT_PUBLIC_WWV_EDITION=$NEXT_PUBLIC_WWV_EDITION pnpm run generate
 
-# Create an empty SQLite database with all tables applied ONLY IF NOT CLOUD
-# (For cloud, we'll run migrations against Postgres at runtime)
-RUN if [ "$NEXT_PUBLIC_WWV_EDITION" != "cloud" ]; then mkdir -p ./data && DATABASE_URL=file:./data/wwv.db npx prisma migrate deploy; fi
+# Database migrations run at container startup via docker-entrypoint.sh
+# DATABASE_URL must be set to a PostgreSQL connection string
 
 # Run Next.js build with Webpack cache mounted
 RUN --mount=type=cache,target=/app/.next/cache NODE_OPTIONS="--max_old_space_size=3072" pnpm run build
@@ -50,7 +49,8 @@ RUN apk add --no-cache openssl
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
-ENV DATABASE_URL=file:./data/wwv.db
+# DATABASE_URL must be provided via environment variable (no default)
+# Example: postgresql://user:pass@host:5432/dbname
 ENV AUTH_TRUST_HOST=true
 
 # Copy Prisma schema + migrations for runtime DB init

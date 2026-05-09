@@ -15,6 +15,9 @@ pnpm install
 Write-Host "[*] Running initial setup (generating secrets)..."
 pnpm run setup
 
+Write-Host "[*] Generating Prisma client..."
+npx prisma generate
+
 # Check for the sibling Data Engine repository
 if (-not (Test-Path "../wwv-data-engine")) {
     Write-Host ""
@@ -31,6 +34,21 @@ if (-not (Test-Path "../wwv-data-engine")) {
     Write-Host "=====================================================================" -ForegroundColor Yellow
     Write-Host ""
 }
+
+Write-Host ""
+Write-Host "=====================================================================" -ForegroundColor Cyan
+Write-Host "[!] DATABASE SETUP REQUIRED" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "WorldWideView uses PostgreSQL. Choose one option:" -ForegroundColor White
+Write-Host ""
+Write-Host "  Option A (Easiest): Run Prisma's built-in local database:" -ForegroundColor Green
+Write-Host "    npx prisma dev" -ForegroundColor Yellow
+Write-Host "    (Copy the DATABASE_URL it prints into your .env.local file)" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  Option B: Use your own PostgreSQL or Supabase instance:" -ForegroundColor Green
+Write-Host "    Set DATABASE_URL in .env.local to your connection string" -ForegroundColor Gray
+Write-Host "=====================================================================" -ForegroundColor Cyan
+Write-Host ""
 
 Write-Host "[*] Starting local Next.js frontend server..."
 Write-Host "   (To run the data engine backends concurrently, run: pnpm dev:all)"

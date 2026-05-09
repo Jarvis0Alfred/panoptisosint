@@ -1,12 +1,11 @@
 #!/bin/sh
 # ─── Docker Entrypoint ───────────────────────────────────────
-# Ensures the SQLite database exists and is migrated before
-# starting the application. On first run with a fresh volume
-# the DB file won't exist yet, so we run prisma migrate deploy.
+# Ensures the PostgreSQL database is migrated before starting
+# the application. DATABASE_URL must point to a PostgreSQL
+# instance (Supabase, self-hosted, etc).
 
 set -e
 
-mkdir -p ./data
 echo "[entrypoint] Running database migrations..."
 npx -y prisma migrate deploy
 echo "[entrypoint] Migrations complete."
