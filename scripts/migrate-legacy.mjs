@@ -1,19 +1,25 @@
 import { DatabaseSync } from "node:sqlite";
 import { PrismaClient } from "../src/generated/prisma/index.js";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
 import path from "node:path";
 import fs from "node:fs";
 
 async function migrate() {
-    const sqlitePath = path.resolve(process.cwd(), "prisma/dev.db");
+    const targetPath = process.argv[2] || "prisma/dev.db";
+    const sqlitePath = path.resolve(process.cwd(), targetPath);
     
     if (!fs.existsSync(sqlitePath)) {
-        console.error("❌ No legacy SQLite database found at prisma/dev.db");
+        console.error(`❌ No legacy SQLite database found at ${targetPath}`);
+        console.error("💡 Usage: node scripts/migrate-legacy.mjs [path-to-db]");
         process.exit(1);
     }
 
-    console.log("📂 Found legacy database. Initializing migration...");
+    console.log(`📂 Found legacy database at ${targetPath}. Initializing migration...`);
     
-    const prisma = new PrismaClient();
+    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+    const adapter = new PrismaPg(pool);
+    const prisma = new PrismaClient({ adapter });
     const db = new DatabaseSync(sqlitePath);
 
     try {
