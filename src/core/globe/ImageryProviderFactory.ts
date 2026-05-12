@@ -1,10 +1,8 @@
 import {
-    BingMapsImageryProvider,
     IonImageryProvider,
     OpenStreetMapImageryProvider,
     ArcGisMapServerImageryProvider,
     UrlTemplateImageryProvider,
-    BingMapsStyle,
 } from "cesium";
 
 export interface ImageryLayerEntry {
@@ -23,21 +21,21 @@ export const IMAGERY_LAYERS: ImageryLayerEntry[] = [
         type: "google-3d",
     },
     {
-        id: "bing-aerial",
-        name: "Bing Maps Aerial",
-        description: "High-resolution satellite imagery",
+        id: "azure-aerial",
+        name: "Azure Maps Satellite",
+        description: "High-resolution satellite imagery via Azure Maps",
         type: "imagery",
     },
     {
-        id: "bing-labels",
-        name: "Bing Maps Hybrid",
-        description: "Aerial with labels",
+        id: "azure-hybrid",
+        name: "Azure Maps Hybrid",
+        description: "Satellite with road labels via Azure Maps",
         type: "imagery",
     },
     {
-        id: "bing-road",
-        name: "Bing Maps Roads",
-        description: "Standard road map",
+        id: "azure-road",
+        name: "Azure Maps Roads",
+        description: "Standard road map via Azure Maps",
         type: "imagery",
     },
     {
@@ -61,35 +59,45 @@ export const IMAGERY_LAYERS: ImageryLayerEntry[] = [
 ];
 
 export async function createImageryProvider(layerId: string) {
-    const bingKey = process.env.NEXT_PUBLIC_BING_MAPS_KEY;
+    const azureMapsKey = process.env.NEXT_PUBLIC_AZURE_MAPS_KEY || process.env.AZURE_MAPS_KEY;
 
     switch (layerId) {
-        case "bing-aerial":
-            if (bingKey) {
-                return await BingMapsImageryProvider.fromUrl("https://dev.virtualearth.net", {
-                    key: bingKey,
-                    mapStyle: BingMapsStyle.AERIAL,
+        case "azure-aerial":
+            if (azureMapsKey) {
+                return new UrlTemplateImageryProvider({
+                    url: `https://atlas.microsoft.com/map/tile?api-version=2022-08-01&tilesetId=microsoft.imagery&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
+                    tileWidth: 256,
+                    tileHeight: 256,
                 });
             }
             return await IonImageryProvider.fromAssetId(2);
 
-        case "bing-labels":
-            if (bingKey) {
-                return await BingMapsImageryProvider.fromUrl("https://dev.virtualearth.net", {
-                    key: bingKey,
-                    mapStyle: BingMapsStyle.AERIAL_WITH_LABELS,
+        case "azure-hybrid":
+            if (azureMapsKey) {
+                return new UrlTemplateImageryProvider({
+                    url: `https://atlas.microsoft.com/map/tile?api-version=2022-08-01&tilesetId=microsoft.base.hybrid.road&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
+                    tileWidth: 256,
+                    tileHeight: 256,
                 });
             }
             return await IonImageryProvider.fromAssetId(3);
 
-        case "bing-road":
-            if (bingKey) {
-                return await BingMapsImageryProvider.fromUrl("https://dev.virtualearth.net", {
-                    key: bingKey,
-                    mapStyle: BingMapsStyle.ROAD,
+        case "azure-road":
+            if (azureMapsKey) {
+                return new UrlTemplateImageryProvider({
+                    url: `https://atlas.microsoft.com/map/tile?api-version=2022-08-01&tilesetId=microsoft.base.road&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
+                    tileWidth: 256,
+                    tileHeight: 256,
                 });
             }
             return await IonImageryProvider.fromAssetId(4);
+
+        // Legacy bing-* IDs redirect to azure-* for backwards compatibility
+        case "bing-aerial":
+        case "bing-labels":
+        case "bing-road":
+            console.warn(`[ImageryProvider] Bing Maps is deprecated. Redirecting ${layerId} to Azure Maps.`);
+            return createImageryProvider(layerId.replace("bing-", "azure-"));
 
         case "osm":
             return new UrlTemplateImageryProvider({

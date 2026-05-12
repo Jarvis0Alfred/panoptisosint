@@ -109,7 +109,7 @@ export function useViewerInitialization(sceneSettings: any) {
 
             if (!googleLoaded) {
                  if (useStore.getState().mapConfig.baseLayerId === "google-3d") {
-                      useStore.getState().updateMapConfig({ fallbackLayerId: "bing-aerial" });
+                      useStore.getState().updateMapConfig({ fallbackLayerId: "azure-aerial" });
                  }
                  clearTimeout(globalTimeout);
                  fireGlobeReady();
