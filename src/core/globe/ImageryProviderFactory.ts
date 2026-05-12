@@ -65,7 +65,7 @@ export async function createImageryProvider(layerId: string) {
         case "azure-aerial":
             if (azureMapsKey) {
                 return new UrlTemplateImageryProvider({
-                    url: `https://atlas.microsoft.com/map/tile?api-version=2022-08-01&tilesetId=microsoft.imagery&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
+                    url: `https://atlas.microsoft.com/map/tile?api-version=2.0&tilesetId=microsoft.imagery&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
                     tileWidth: 256,
                     tileHeight: 256,
                 });
@@ -75,7 +75,7 @@ export async function createImageryProvider(layerId: string) {
         case "azure-hybrid":
             if (azureMapsKey) {
                 return new UrlTemplateImageryProvider({
-                    url: `https://atlas.microsoft.com/map/tile?api-version=2022-08-01&tilesetId=microsoft.base.hybrid.road&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
+                    url: `https://atlas.microsoft.com/map/tile?api-version=2.0&tilesetId=microsoft.base.hybrid.road&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
                     tileWidth: 256,
                     tileHeight: 256,
                 });
@@ -85,7 +85,7 @@ export async function createImageryProvider(layerId: string) {
         case "azure-road":
             if (azureMapsKey) {
                 return new UrlTemplateImageryProvider({
-                    url: `https://atlas.microsoft.com/map/tile?api-version=2022-08-01&tilesetId=microsoft.base.road&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
+                    url: `https://atlas.microsoft.com/map/tile?api-version=2.0&tilesetId=microsoft.base.road&zoom={z}&x={x}&y={y}&subscription-key=${azureMapsKey}`,
                     tileWidth: 256,
                     tileHeight: 256,
                 });
