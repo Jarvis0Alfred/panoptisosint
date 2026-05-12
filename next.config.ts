@@ -54,10 +54,10 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  outputFileTracingExcludes: {
-    "*": [
-      "./public/cesium/**"
-    ],
+  // Cesium assets must be INCLUDED in the trace, not excluded
+  // outputFileTracingExcludes removed for cesium
+  outputFileTracingIncludes: {
+    "/*": ["./scripts/**/*", "./public/cesium/**/*"],
   },
   env: {
     CESIUM_BASE_URL: "/cesium",

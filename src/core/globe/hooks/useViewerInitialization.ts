@@ -44,8 +44,8 @@ export function useViewerInitialization(sceneSettings: any) {
         initPrimitiveCollections(viewer);
 
         viewer.scene.renderError.addEventListener((scene, error) => {
-            console.error("[Cesium Render Error] Render loop crashed! Exception:");
-            console.error(error);
+            const message = error instanceof Error ? error.message : String(error);
+            console.error("[Cesium Render Error] Render loop crashed! Exception:", message);
         });
         
         // Initial Camera Position (Sync)

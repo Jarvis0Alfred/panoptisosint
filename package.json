@@ -14,7 +14,7 @@
     "dev:plugins": "node scripts/watch-local-plugins.mjs",
     "predev": "node scripts/boot-db.mjs && npx dotenv-cli -e .env.local -c -- npx prisma db push --accept-data-loss && npx prisma generate && node scripts/copy-cesium.mjs && node scripts/sync-local-plugins.mjs",
     "copy-cesium": "node scripts/copy-cesium.mjs",
-    "prebuild": "node scripts/check-build-env.mjs",
+    "prebuild": "node scripts/check-build-env.mjs && node scripts/copy-cesium.mjs",
     "build": "next build --webpack",
     "start": "next start",
     "test": "vitest run",
