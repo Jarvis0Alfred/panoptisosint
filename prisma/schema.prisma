@@ -124,6 +124,7 @@ model Alert {
 model SearchHistory {
   id              String   @id @default(uuid())
   userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   query           String
   pluginId        String?
   resultsCount    Int?
