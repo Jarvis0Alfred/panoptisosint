@@ -20,6 +20,10 @@ model User {
   role           String     @default("user")
   createdAt      DateTime   @default(now())
   favorites      Favorite[]
+  savedViews     SavedView[]
+  preferences    UserPreference?
+  alerts         Alert[]
+  searchHistory  SearchHistory[]
   memberships    WorkspaceMember[]
 
   @@unique([tenantId, email])
@@ -34,12 +38,99 @@ model Favorite {
   label      String
   pluginName String
   lastSeen   DateTime @default(now())
+  tags       String[]
+  notes      String?
+  isWatching Boolean  @default(false)
+  watchRadiusKm Float?
+  metadata   Json     @default("{}")
 
   userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, entityId])
   @@map("favorites")
+}
+
+// Saved camera views / layer configurations
+model SavedView {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  longitude   Float?
+  latitude    Float?
+  height      Float?
+  heading     Float?
+  pitch       Float?
+  roll        Float?
+  layers      Json     @default("[]")
+  timeWindow  String   @default("24h")
+  region      String   @default("global")
+  metadata    Json     @default("{}")
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("saved_views")
+}
+
+// User preferences (theme, performance, etc.)
+model UserPreference {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme            String   @default("black")
+  showLabels       Boolean  @default(true)
+  showFps          Boolean  @default(false)
+  timeWindow       String   @default("24h")
+  defaultRegion    String   @default("global")
+  emailAlerts      Boolean  @default(false)
+  pushAlerts       Boolean  @default(false)
+  resolutionScale  Float    @default(1.0)
+  antiAliasing     Boolean  @default(true)
+  autoRefresh      Boolean  @default(true)
+  refreshInterval  Int      @default(30)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("user_preferences")
+}
+
+// Geofence alerts
+model Alert {
+  id             String    @id @default(uuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  pluginId       String
+  alertType      String
+  centerLat      Float?
+  centerLon      Float?
+  radiusKm       Float?
+  polygon        Json?
+  entityFilter   Json      @default("{}")
+  isActive       Boolean   @default(true)
+  notifyEmail    Boolean   @default(false)
+  notifyPush     Boolean   @default(false)
+  lastTriggered  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("alerts")
+}
+
+// Search history
+model SearchHistory {
+  id              String   @id @default(uuid())
+  userId          String
+  query           String
+  pluginId        String?
+  resultsCount    Int?
+  clickedEntityId String?
+  createdAt       DateTime @default(now())
+
+  @@map("search_history")
 }
 
 // DISABLED — aviation history feature is currently turned off.

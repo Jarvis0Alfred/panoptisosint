@@ -42,11 +42,11 @@ export function validateManifest(
         const entry = manifest.entry.trim();
         const isRelative = entry.startsWith("/") || entry.startsWith("./");
         const isLocal = entry.startsWith("http://localhost") || entry.startsWith("http://127.0.0.1");
-        const isWWV = entry.includes(".worldwideview.dev");
+        const isPANOPTIS = entry.includes(".panoptisosint.gr");
         const isCDN = entry.startsWith("https://cdn.jsdelivr.net") || entry.startsWith("https://unpkg.com");
 
-        if (!isRelative && !isLocal && !isWWV && !isCDN) {
-            errors.push("entry URL must be a relative path, CDN, localhost, or worldwideview.dev domain");
+        if (!isRelative && !isLocal && !isPANOPTIS && !isCDN) {
+            errors.push("entry URL must be a relative path, CDN, localhost, or panoptisosint.gr domain");
         }
     }
 

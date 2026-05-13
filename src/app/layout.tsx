@@ -12,8 +12,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "WorldWideView | Geospatial Intelligence",
-  description: "Next-generation, open-source geospatial intelligence platform.",
+  title: "PANOPTIS OSINT | Geospatial Intelligence",
+  description: "PANOPTIS OSINT - Next-generation geospatial intelligence platform.",
 };
 
 export default function RootLayout({
@@ -56,7 +56,7 @@ export default function RootLayout({
         {process.env.VERCEL && <Analytics />}
         {process.env.NEXT_PUBLIC_WWV_ANALYTICS === "true" && (
           <Script
-            src="https://analytics.worldwideview.dev/script.js"
+            src="https://analytics.panoptisosint.gr/script.js"
             data-website-id="2c8f6c09-2651-4a2a-af99-b8cee1612b9a"
             strategy="afterInteractive"
           />

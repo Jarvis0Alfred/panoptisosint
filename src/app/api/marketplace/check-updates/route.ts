@@ -3,7 +3,7 @@ import { getInstalledPlugins } from "@/lib/marketplace/repository";
 import { getClientIp } from "@/lib/rateLimit";
 import { marketplaceApiLimiter } from "@/lib/rateLimiters";
 
-const MARKETPLACE_URL = process.env.NEXT_PUBLIC_MARKETPLACE_URL || "https://marketplace.worldwideview.dev";
+const MARKETPLACE_URL = process.env.NEXT_PUBLIC_MARKETPLACE_URL || "https://panoptisosint.gr/marketplace";
 
 export async function GET(request: Request) {
     const rateLimited = marketplaceApiLimiter.check(getClientIp(request));

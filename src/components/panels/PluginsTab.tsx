@@ -47,7 +47,7 @@ function TrustBadge({ trust }: { trust: string }) {
 function BrowseLink() {
     return (
         <a
-            href="https://marketplace.worldwideview.dev"
+            href="https://panoptisosint.gr/marketplace"
             target="_blank"
             rel="noopener noreferrer"
             className="plugins-tab__browse"

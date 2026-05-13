@@ -1664,6 +1664,47 @@ body.is-resizing-sidebar .sidebar {
   transform: scale(0.97);
 }
 
+/* ─── Mobile Globe Fix ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .app-shell__globe {
+    position: fixed !important;
+    top: 88px !important; /* Below mobile header + HUD bar */
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 88px) !important;
+    z-index: 0;
+  }
+  
+  .app-shell {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .page-root {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* Ensure Cesium viewer fills container */
+  .cesium-viewer,
+  .cesium-viewer-cesiumWidgetContainer,
+  .cesium-widget,
+  canvas.cesium-widget {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+}
+
 /* ─── Imagery Picker ───────────────────────────────────────── */
 .imagery-picker {
   margin-top: 0;
@@ -1896,4 +1937,55 @@ body.is-resizing-sidebar .sidebar {
   width: 1px;
   height: 16px;
   background: var(--border-subtle);
+}
+
+/* ─── Mobile Globe Fix ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .app-shell__globe {
+    position: fixed !important;
+    top: 80px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 80px) !important;
+    z-index: 0;
+  }
+
+  .app-shell {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .page-root {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Ensure Cesium viewer fills container */
+  .cesium-viewer,
+  .cesium-viewer-cesiumWidgetContainer,
+  .cesium-widget,
+  canvas.cesium-widget {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  /* Mobile header adjustments */
+  .header--mobile {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 80px !important;
+    z-index: 100 !important;
+  }
 }

@@ -29,8 +29,8 @@ export default function SetupPage() {
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <div className={styles.logo}>W</div>
-                <h1 className={styles.title}>Welcome to WorldWideView</h1>
+                <div className={styles.logo}>P</div>
+                <h1 className={styles.title}>Welcome to PANOPTIS OSINT</h1>
                 <p className={styles.subtitle}>Create your admin account to get started</p>
 
                 {/* Legacy Data Detection Banner */}
@@ -41,6 +41,12 @@ export default function SetupPage() {
                 </div>
 
                 <form onSubmit={handleSubmit} className={styles.form}>
+                    {error && (
+                        <div className={styles.errorBox}>
+                            <strong>Error:</strong> {error}
+                        </div>
+                    )}
+
                     <label className={styles.label} htmlFor="name">
                         Display Name
                     </label>
@@ -89,8 +95,6 @@ export default function SetupPage() {
                         minLength={8}
                         className={styles.input}
                     />
-
-                    {error && <p className={styles.error}>{error}</p>}
 
                     <button type="submit" disabled={loading} className={styles.button}>
                         {loading ? "Creating..." : "Create Admin Account"}
