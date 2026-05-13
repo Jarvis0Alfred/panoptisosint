@@ -21,7 +21,7 @@ import { PluginErrorBoundary } from "@/components/common/PluginErrorBoundary";
 
 /** Stable references */
 const CONTEXT_OPTIONS = { requestWebgl2: true, webgl: { antialias: true } } as const;
-const VIEWER_STYLE = { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 } as const;
+const VIEWER_STYLE = { position: "absolute" as const, top: 0, left: 0, width: "100%", height: "100%", margin: 0, padding: 0, overflow: "hidden" };
 
 // New Hooks
 import { useCameraActions } from "./hooks/useCameraActions";
@@ -244,21 +244,22 @@ export default function GlobeView() {
     }, [layers, viewerReady]);
 
     return (
-        <Viewer
-            full
-            ref={(e) => {
-                const el = e?.cesiumElement;
-                if (el && el !== viewerRef.current && !el.isDestroyed()) handleViewerReady(el);
-            }}
-            animation={false} baseLayerPicker={false} fullscreenButton={false}
-            geocoder={false} homeButton={false} infoBox={false}
-            navigationHelpButton={false} sceneModePicker={false}
-            selectionIndicator={false} timeline={false} vrButton={false}
-            baseLayer={false}
-            contextOptions={CONTEXT_OPTIONS}
-            style={VIEWER_STYLE}
-        >
-            {viewerReady && PluginGlobeComponents}
-        </Viewer>
+        <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "hidden" }}>
+            <Viewer
+                ref={(e) => {
+                    const el = e?.cesiumElement;
+                    if (el && el !== viewerRef.current && !el.isDestroyed()) handleViewerReady(el);
+                }}
+                animation={false} baseLayerPicker={false} fullscreenButton={false}
+                geocoder={false} homeButton={false} infoBox={false}
+                navigationHelpButton={false} sceneModePicker={false}
+                selectionIndicator={false} timeline={false} vrButton={false}
+                baseLayer={false}
+                contextOptions={CONTEXT_OPTIONS}
+                style={VIEWER_STYLE}
+            >
+                {viewerReady && PluginGlobeComponents}
+            </Viewer>
+        </div>
     );
 }
