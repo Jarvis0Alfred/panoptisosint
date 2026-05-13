@@ -127,6 +127,27 @@ export default function GlobeView() {
 
     useEffect(() => {
         if (!viewerRef.current || viewerRef.current.isDestroyed()) return;
+        const viewer = viewerRef.current;
+
+        // Force an initial resize so Cesium fills the container
+        viewer.resize();
+
+        const handleResize = () => {
+            if (!viewer.isDestroyed()) viewer.resize();
+        };
+        window.addEventListener("resize", handleResize);
+
+        // Also trigger after a short delay to catch any CSS/layout shifts
+        const timeout = setTimeout(handleResize, 500);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            clearTimeout(timeout);
+        };
+    }, [viewerReady]);
+
+    useEffect(() => {
+        if (!viewerRef.current || viewerRef.current.isDestroyed()) return;
         return setupInteractionHandlers(viewerRef.current, hoveredEntityIdRef);
     }, [viewerReady]);
 
@@ -246,7 +267,6 @@ export default function GlobeView() {
     return (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0, overflow: "hidden" }}>
             <Viewer
-                full
                 ref={(e) => {
                     const el = e?.cesiumElement;
                     if (el && el !== viewerRef.current && !el.isDestroyed()) handleViewerReady(el);
