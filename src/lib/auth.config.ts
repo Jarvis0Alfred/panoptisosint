@@ -1,9 +1,8 @@
 import type { NextAuthConfig } from "next-auth";
-import { isDemo } from "@/core/edition";
 
 /**
- * Lightweight auth config for proxy.ts (middleware).
- * No Prisma imports here to avoid Edge runtime issues.
+ * Auth config for middleware.
+ * Public access by default. Only gate specific features.
  */
 export const authConfig: NextAuthConfig = {
     pages: {
@@ -11,24 +10,16 @@ export const authConfig: NextAuthConfig = {
     },
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            const isLoggedIn = !!auth?.user;
+            const isApi = nextUrl.pathname.startsWith("/api");
             const isSetup = nextUrl.pathname.startsWith("/setup");
             const isLogin = nextUrl.pathname.startsWith("/login");
-            const isApi = nextUrl.pathname.startsWith("/api");
 
-            // API routes: let through (bridge uses token auth)
-            if (isApi) return true;
+            // API, setup, login — always public
+            if (isApi || isSetup || isLogin) return true;
 
-            // Setup/login pages: always accessible
-            if (isSetup || isLogin) return true;
-
-            // Demo edition: all pages accessible (no login required)
-            if (isDemo) return true;
-
-            // Everything else requires login
-            return isLoggedIn;
+            // Everything else — public. Auth only gates admin features.
+            return true;
         },
     },
     providers: [], // Added in auth.ts
 };
-
