@@ -86,7 +86,6 @@ export function Header() {
                         <img src="/logo/logo-icon.svg" alt="PANOPTIS" style={{ width: 20, height: 20, objectFit: "contain" }} />
                         <div className="header__logo header__logo--compact">PANOPTIS</div>
                     </a>
-                    <span className="alpha-badge">ALPHA</span>
                     {isDemoAdmin && <span className="alpha-badge" style={{ background: "var(--accent-orange, #f59e0b)" }}>ADMIN</span>}
                 </div>
 
@@ -171,7 +170,6 @@ export function Header() {
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                         <img src="/logo/logo-icon.svg" alt="PANOPTIS" style={{ width: 22, height: 22, objectFit: "contain" }} />
                         <div className="header__logo">PANOPTIS OSINT</div>
-                        <span className="alpha-badge">ALPHA</span>
                         {isDemoAdmin && <span className="alpha-badge" style={{ background: "var(--accent-orange, #f59e0b)" }}>ADMIN</span>}
                     </div>
                     <div className="header__subtitle">Geospatial Intelligence</div>

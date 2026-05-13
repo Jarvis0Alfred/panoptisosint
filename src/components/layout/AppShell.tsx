@@ -77,14 +77,21 @@ export function AppShell() {
                 // Non-critical — load all built-ins if endpoint fails
             }
 
-            // Setup demo defaults
+            // Setup demo defaults — enable ALL registered plugins in demo mode
             const demoDefaultPlugins = new Set<string>();
             if (isDemo) {
                 const envVar = process.env.NEXT_PUBLIC_DEMO_DEFAULT_PLUGINS || "";
-                envVar.split(",").forEach(s => {
-                    const clean = s.trim();
-                    if (clean) demoDefaultPlugins.add(clean);
-                });
+                if (envVar.trim()) {
+                    envVar.split(",").forEach(s => {
+                        const clean = s.trim();
+                        if (clean) demoDefaultPlugins.add(clean);
+                    });
+                } else {
+                    // No env var set — enable all registered plugins
+                    for (const plugin of pluginRegistry.getAll()) {
+                        demoDefaultPlugins.add(plugin.id);
+                    }
+                }
             }
 
 
