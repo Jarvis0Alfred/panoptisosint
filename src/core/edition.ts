@@ -27,7 +27,7 @@ const VALID_EDITIONS: ReadonlySet<string> = new Set<Edition>([
 export function resolveEdition(raw?: string): Edition {
     const value = (raw ?? "").trim().toLowerCase();
     if (VALID_EDITIONS.has(value)) return value as Edition;
-    return "local";
+    return "demo"; // Default to demo for PANOPTIS
 }
 
 /** Current deployment edition — determined once at module load. */

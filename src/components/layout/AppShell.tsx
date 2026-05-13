@@ -29,6 +29,7 @@ import ErrorToast from "@/components/ui/ErrorToast";
 import UnverifiedPluginBatchDialog from "@/components/marketplace/UnverifiedPluginBatchDialog";
 import { FeedbackDialog } from "@/components/common/FeedbackDialog";
 import { isDemo } from "@/core/edition";
+import { registerDefaultPlugins } from "@/core/plugins/registerDefaults";
 
 import { injectHostGlobals } from "@/core/plugins/hostGlobals";
 import { initLogCatcher } from "@/lib/logCatcher";
@@ -76,6 +77,9 @@ export function AppShell() {
             } catch {
                 // Non-critical — load all built-ins if endpoint fails
             }
+
+            // Register default plugins BEFORE init so they're available
+            registerDefaultPlugins();
 
             // Setup demo defaults — enable ALL registered plugins in demo mode
             const demoDefaultPlugins = new Set<string>();

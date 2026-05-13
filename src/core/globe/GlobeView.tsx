@@ -244,8 +244,9 @@ export default function GlobeView() {
     }, [layers, viewerReady]);
 
     return (
-        <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "hidden" }}>
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0, overflow: "hidden" }}>
             <Viewer
+                full
                 ref={(e) => {
                     const el = e?.cesiumElement;
                     if (el && el !== viewerRef.current && !el.isDestroyed()) handleViewerReady(el);
@@ -256,7 +257,6 @@ export default function GlobeView() {
                 selectionIndicator={false} timeline={false} vrButton={false}
                 baseLayer={false}
                 contextOptions={CONTEXT_OPTIONS}
-                style={VIEWER_STYLE}
             >
                 {viewerReady && PluginGlobeComponents}
             </Viewer>
