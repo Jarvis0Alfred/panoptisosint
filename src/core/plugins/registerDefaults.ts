@@ -244,5 +244,5 @@ export function registerDefaultPlugins(): void {
             console.warn(`[registerDefaults] Failed to register ${manifest.id}:`, err);
         }
     }
-    console.log(`[registerDefaults] Registered ${DEFAULT_MANIFESTS.length} default plugins`);
+    console.log(`[registerDefaults] Registered ${DEFAULT_MANIFESTS.length} default plugins (v2)`);
 }
