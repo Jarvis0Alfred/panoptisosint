@@ -81,6 +81,18 @@ html, body {
   height: 100%;
 }
 
+/* Ensure Cesium viewer fills container on all screen sizes */
+.cesium-viewer,
+.cesium-viewer-cesiumWidgetContainer,
+.cesium-widget,
+canvas.cesium-widget {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
 /* ─── Header ──────────────────────────────────────────────── */
 .header {
   position: fixed;
