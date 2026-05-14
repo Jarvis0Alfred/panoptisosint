@@ -95,23 +95,14 @@ export class DeclarativePlugin implements WorldPlugin {
     // ── Private helpers ─────────────────────────────────────
 
     private buildUrl(base: string): string {
-        // Route external URLs through the local proxy to bypass CORS
-        let url = base;
-        const isExternal = /^https?:\/\//.test(base);
-        if (isExternal && typeof window !== "undefined") {
-            const proxyBase = `${window.location.origin}/api/proxy`;
-            const sep = base.includes("?") ? "&" : "?";
-            url = `${proxyBase}?url=${encodeURIComponent(base)}`;
-        }
-
         const auth = this.manifest.dataSource?.auth;
-        if (auth?.type !== "query") return url;
+        if (auth?.type !== "query") return base;
 
         const value = this.resolveEnvVar(auth.envVar);
-        if (!value) return url;
+        if (!value) return base;
 
-        const sep = url.includes("?") ? "&" : "?";
-        return `${url}${sep}${auth.key}=${encodeURIComponent(value)}`;
+        const sep = base.includes("?") ? "&" : "?";
+        return `${base}${sep}${auth.key}=${encodeURIComponent(value)}`;
     }
 
     private buildHeaders(): Record<string, string> {
