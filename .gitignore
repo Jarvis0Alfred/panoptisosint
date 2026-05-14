@@ -103,4 +103,4 @@ build_output*.txt
 
 # Seeder repositories
 /local-seeders/
-/.local-seeders-dist/
+/.local-seeders-dist/.env
