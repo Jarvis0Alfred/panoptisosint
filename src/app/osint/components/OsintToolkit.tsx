@@ -21,6 +21,16 @@ import {
     Check,
     AlertTriangle,
     Info,
+    Clock,
+    Newspaper,
+    BookOpen,
+    Radio,
+    Landmark,
+    Home,
+    FileText,
+    Code,
+    MapPin,
+    Video,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -58,6 +68,17 @@ const CATEGORIES: OsintCategory[] = [
     { id: "threat", name: "Threat Intel", icon: "Shield", description: "Malware, IPs, dark web, breaches" },
     { id: "physical", name: "Physical OSINT", icon: "Car", description: "Vehicles, geolocation, EXIF, cameras" },
     { id: "business", name: "Business", icon: "Building2", description: "Companies, directors, registries" },
+    { id: "archives", name: "Archives", icon: "Clock", description: "Web history, snapshots" },
+    { id: "social-deep", name: "Social Deep", icon: "Video", description: "Deep social media" },
+    { id: "geospatial", name: "Geospatial", icon: "MapPin", description: "Maps, satellite" },
+    { id: "developer", name: "Developer", icon: "Code", description: "GitHub, code repos" },
+    { id: "documents", name: "Documents", icon: "FileText", description: "Leaked docs" },
+    { id: "legal", name: "Court & Legal", icon: "Landmark", description: "Case law" },
+    { id: "realestate", name: "Real Estate", icon: "Home", description: "Property records" },
+    { id: "patents", name: "Patents", icon: "ScanLine", description: "Trademarks, IP" },
+    { id: "academic", name: "Academic", icon: "BookOpen", description: "Papers, researchers" },
+    { id: "news", name: "News & Media", icon: "Newspaper", description: "News monitoring" },
+    { id: "radio", name: "Radio & Comms", icon: "Radio", description: "Flight, marine, police" },
 ];
 
 // ─── Tools Database ─────────────────────────────────────────
@@ -671,6 +692,519 @@ const TOOLS: OsintTool[] = [
         placeholder: "twitter.com/username or tweet URL",
         tip: "Wayback Machine saves tweets. Google cache: 'cache:twitter.com/user'. Nitter instances for no-login viewing.",
     },
+    // Archives
+    {
+        id: "wayback",
+        name: "Wayback Machine",
+        description: "View historical versions of any webpage. 800+ billion pages archived since 1996.",
+        category: "archives",
+        icon: "Clock",
+        url: "https://web.archive.org",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Enter URL (e.g., example.com)",
+        tip: "Use calendar view to see all snapshots. Compare versions to track changes.",
+    },
+    {
+        id: "archive-today",
+        name: "Archive.today",
+        description: "Snapshot any webpage, bypass paywalls. Preserves content even if original is deleted.",
+        category: "archives",
+        icon: "Clock",
+        url: "https://archive.today",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Enter URL to snapshot",
+        tip: "Useful for articles behind paywalls. Creates permanent snapshot.",
+    },
+    {
+        id: "google-cache",
+        name: "Google Cache",
+        description: "View cached versions of webpages from Google's index.",
+        category: "archives",
+        icon: "Clock",
+        url: "https://webcache.googleusercontent.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "cache:example.com/page",
+        tip: "Search 'cache:URL' in Google. Text-only version loads faster.",
+    },
+    {
+        id: "commoncrawl",
+        name: "Common Crawl",
+        description: "Open repository of web crawl data. 8+ years of raw web content.",
+        category: "archives",
+        icon: "Database",
+        url: "https://commoncrawl.org",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Domain or URL prefix",
+        tip: "Download petabyte-scale data from S3. Use CDX API for URL lookups.",
+    },
+    // Social Deep
+    {
+        id: "redditsearch",
+        name: "Reddit Search",
+        description: "Deep search across Reddit posts and comments. Real-time ground truth from communities.",
+        category: "social-deep",
+        icon: "MessageSquare",
+        url: "https://redditsearch.io",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Keyword, username, or subreddit",
+        tip: "Search deleted comments with Removeddit or Reveddit. Use Pushshift API.",
+    },
+    {
+        id: "linkedin-search",
+        name: "LinkedIn Search Tricks",
+        description: "Google dorks for LinkedIn profiles without login. Find people by title, company, location.",
+        category: "social-deep",
+        icon: "User",
+        url: "https://google.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "site:linkedin.com/in/ 'Engineer' 'Google'",
+        tip: "Query: site:linkedin.com/in/ 'title' 'company' 'location'. Use cached view if private.",
+    },
+    {
+        id: "instagram-search",
+        name: "Instagram Search",
+        description: "Find posts by location, hashtag, or user. Stories and reels analysis.",
+        category: "social-deep",
+        icon: "Image",
+        url: "https://dumpor.io",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "username",
+        placeholder: "@username or hashtag",
+        tip: "Dumpor, Imginn view profiles without login. Search stories by location tag.",
+    },
+    {
+        id: "tiktok-search",
+        name: "TikTok Search",
+        description: "Search videos by sound, hashtag, location. Trending content analysis.",
+        category: "social-deep",
+        icon: "Video",
+        url: "https://tiktok.com/search",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Hashtag, username, or keyword",
+        tip: "Location tags reveal where videos were filmed. Sort by 'Most liked'.",
+    },
+    {
+        id: "facebook-graph",
+        name: "Facebook Search",
+        description: "Alternative Facebook search via intelx.io. Find profiles by email/phone.",
+        category: "social-deep",
+        icon: "Globe",
+        url: "https://intelx.io/facebook",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Facebook profile name or ID",
+        tip: "IntelX indexes public Facebook data. Search cached pages for old Graph results.",
+    },
+    // Geospatial
+    {
+        id: "overpass-turbo",
+        name: "Overpass Turbo",
+        description: "Query OpenStreetMap data. Find buildings, POIs, infrastructure, boundaries.",
+        category: "geospatial",
+        icon: "MapPin",
+        url: "https://overpass-turbo.eu",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Query or map area",
+        tip: "Wizard mode for easy queries. Find: buildings, hospitals, military bases. Export GeoJSON.",
+    },
+    {
+        id: "wikimapia",
+        name: "Wikimapia",
+        description: "User-annotated map with millions of building names and local notes.",
+        category: "geospatial",
+        icon: "MapPin",
+        url: "https://wikimapia.org",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Building name or location",
+        tip: "Often has names Google Maps lacks. Community annotations reveal local knowledge.",
+    },
+    {
+        id: "sentinel-hub",
+        name: "Sentinel Hub",
+        description: "Free satellite imagery from ESA Sentinel. 10m resolution, 5-day revisit.",
+        category: "geospatial",
+        icon: "MapPin",
+        url: "https://sentinel-hub.com",
+        freeTier: "Limited",
+        paidTier: "€50/month",
+        requiresKey: true,
+        keyName: "SENTINEL_HUB_KEY",
+        inputType: "text",
+        placeholder: "Lat, Lon or location name",
+        tip: "EO Browser for visual analysis. Time series shows changes. NDVI for vegetation.",
+    },
+    {
+        id: "yandex-maps",
+        name: "Yandex Maps / Panoramas",
+        description: "Street view where Google doesn't cover. Better for Eastern Europe, Russia, Central Asia.",
+        category: "geospatial",
+        icon: "MapPin",
+        url: "https://yandex.com/maps",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Address or coordinates",
+        tip: "Panoramas often more recent than Street View for certain regions.",
+    },
+    {
+        id: "mapillary",
+        name: "Mapillary",
+        description: "Crowdsourced street-level imagery. Millions of photos from contributors worldwide.",
+        category: "geospatial",
+        icon: "MapPin",
+        url: "https://mapillary.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Location or coordinates",
+        tip: "Filter by date for recent imagery. Object detection API identifies signs, buildings.",
+    },
+    // Developer
+    {
+        id: "github-search",
+        name: "GitHub Deep Search",
+        description: "Search code, commits, issues, users. Find leaked credentials, developer identity.",
+        category: "developer",
+        icon: "Code",
+        url: "https://github.com/search",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Search query or username",
+        tip: "Code search: 'password' extension:env. Commit history reveals real names/emails.",
+    },
+    {
+        id: "gitlab-search",
+        name: "GitLab Search",
+        description: "Alternative code host search. Often has different repos than GitHub.",
+        category: "developer",
+        icon: "Code",
+        url: "https://gitlab.com/explore",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Project name or username",
+        tip: "Self-hosted GitLab instances are public too. Search via Google: site:gitlab.company.com.",
+    },
+    {
+        id: "npm-search",
+        name: "npm Registry Search",
+        description: "Find packages by author. Link developer identity across projects.",
+        category: "developer",
+        icon: "Code",
+        url: "https://npmjs.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Package name or author",
+        tip: "Author pages list all packages. package.json emails reveal identity.",
+    },
+    {
+        id: "stack-overflow",
+        name: "Stack Overflow",
+        description: "Developer Q&A. Link accounts to real identities via profiles.",
+        category: "developer",
+        icon: "Code",
+        url: "https://stackoverflow.com/users",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Username or real name",
+        tip: "Developer story pages link to GitHub, Twitter. Network profile links all StackExchange accounts.",
+    },
+    // Documents
+    {
+        id: "wikileaks",
+        name: "WikiLeaks",
+        description: "Leaked documents, cables, datasets. Official government and corporate leaks.",
+        category: "documents",
+        icon: "FileText",
+        url: "https://wikileaks.org",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Keyword or document name",
+        tip: "Cablegate for diplomatic cables. Vault 7 for CIA tools. PlusD for emails.",
+    },
+    {
+        id: "ddosecrets",
+        name: "DDoSecrets",
+        description: "Alternative to WikiLeaks. Leaks, hacks, whistleblower submissions.",
+        category: "documents",
+        icon: "FileText",
+        url: "https://ddosecrets.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Keyword or dataset name",
+        tip: "BlueLeaks: US police documents. Parler archive: January 6 data. GabLeaks.",
+    },
+    {
+        id: "documentcloud",
+        name: "DocumentCloud",
+        description: "Journalist-uploaded documents. FOIA responses, court filings.",
+        category: "documents",
+        icon: "FileText",
+        url: "https://documentcloud.org",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Keyword or document title",
+        tip: "Entity extraction finds people, places, orgs. View page notes from journalists.",
+    },
+    // Legal
+    {
+        id: "courtlistener",
+        name: "CourtListener",
+        description: "US federal court opinions. Search case law, dockets.",
+        category: "legal",
+        icon: "Landmark",
+        url: "https://courtlistener.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Case name, party, or citation",
+        tip: "Full-text search across millions of opinions. Docket alerts. RECAP archive for PACER docs.",
+    },
+    {
+        id: "justia",
+        name: "Justia",
+        description: "Case law, codes, regulations. Federal and state decisions.",
+        category: "legal",
+        icon: "Landmark",
+        url: "https://justia.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Case name or legal topic",
+        tip: "Docket search for ongoing cases. Lawyer directory. Trademark search. Supreme Court center.",
+    },
+    // Real Estate
+    {
+        id: "zillow",
+        name: "Zillow",
+        description: "Property records, ownership history, tax assessments. US-focused.",
+        category: "realestate",
+        icon: "Home",
+        url: "https://zillow.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Address or property address",
+        tip: "Sale history reveals ownership changes. Tax history shows assessment changes.",
+    },
+    {
+        id: "county-assessor",
+        name: "County Assessor Records",
+        description: "Property ownership, tax records, parcel maps. Direct from government.",
+        category: "realestate",
+        icon: "Home",
+        url: "https://google.com",
+        freeTier: "Varies by county",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "County name + assessor search",
+        tip: "Search: 'county name assessor property search'. Many counties have online databases.",
+    },
+    // Patents
+    {
+        id: "uspto-tess",
+        name: "USPTO TESS",
+        description: "US trademark search. Word and design mark searching.",
+        category: "patents",
+        icon: "ScanLine",
+        url: "https://tmsearch.uspto.gov",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Trademark name or owner",
+        tip: "Basic Word Search for exact matches. Assignment search shows ownership transfers.",
+    },
+    {
+        id: "wipo-global",
+        name: "WIPO Global Brand DB",
+        description: "International trademark search across multiple jurisdictions.",
+        category: "patents",
+        icon: "ScanLine",
+        url: "https://wipo.int/globalbrand",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Brand name or owner",
+        tip: "Search Madrid System international registrations. Covers 100+ countries.",
+    },
+    {
+        id: "google-patents",
+        name: "Google Patents",
+        description: "Patent search with full text. Prior art search, citations analysis.",
+        category: "patents",
+        icon: "ScanLine",
+        url: "https://patents.google.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Patent number, inventor, or keyword",
+        tip: "Full text search across 100M+ patents. Similar patents via AI. Family patents across jurisdictions.",
+    },
+    // Academic
+    {
+        id: "google-scholar",
+        name: "Google Scholar",
+        description: "Academic papers, citations, author profiles. Find researchers.",
+        category: "academic",
+        icon: "BookOpen",
+        url: "https://scholar.google.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Paper title, author, or keyword",
+        tip: "Author profiles show h-index, all publications. Cited by reveals influence.",
+    },
+    {
+        id: "orcid",
+        name: "ORCID",
+        description: "Researcher ID registry. Persistent identifiers for academics.",
+        category: "academic",
+        icon: "BookOpen",
+        url: "https://orcid.org",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Researcher name or ORCID ID",
+        tip: "ORCID IDs link all publications. Employment history. Funding sources. Co-author networks.",
+    },
+    {
+        id: "researchgate",
+        name: "ResearchGate",
+        description: "Academic social network. Full-text papers, Q&A, impact metrics.",
+        category: "academic",
+        icon: "BookOpen",
+        url: "https://researchgate.net",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Researcher name or paper title",
+        tip: "Full-text PDFs often available. Research interests reveal expertise. Institution history.",
+    },
+    // News
+    {
+        id: "ground-news",
+        name: "Ground News",
+        description: "Compare news coverage across political spectrum. Bias detection.",
+        category: "news",
+        icon: "Newspaper",
+        url: "https://ground.news",
+        freeTier: "Limited",
+        paidTier: "$9.99/month",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "News topic or event",
+        tip: "Bias comparison shows left/center/right coverage. Factuality ratings. Timeline.",
+    },
+    {
+        id: "news-lookup",
+        name: "NewsLookup",
+        description: "Search thousands of news sources by keyword, date, source.",
+        category: "news",
+        icon: "Newspaper",
+        url: "https://newslookup.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "News keyword or headline",
+        tip: "Search by source domain. Date range filtering. RSS feeds for monitoring.",
+    },
+    // Radio & Comms
+    {
+        id: "flightaware",
+        name: "FlightAware",
+        description: "Flight tracking with history, schedules, airport activity.",
+        category: "radio",
+        icon: "Radio",
+        url: "https://flightaware.com",
+        freeTier: "Limited",
+        paidTier: "$39.95/month",
+        requiresKey: true,
+        keyName: "FLIGHTAWARE_API_KEY",
+        inputType: "text",
+        placeholder: "Flight number, tail number, or airport",
+        tip: "Historical data shows past routes. Aircraft type and registration.",
+    },
+    {
+        id: "radarbox",
+        name: "RadarBox",
+        description: "Flight tracking with photos, statistics, fleet info.",
+        category: "radio",
+        icon: "Radio",
+        url: "https://radarbox.com",
+        freeTier: "Limited",
+        paidTier: "€9.90/month",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Flight, aircraft, or airport",
+        tip: "Photo database of aircraft. Fleet info by airline. Playback mode.",
+    },
+    {
+        id: "broadcastify",
+        name: "Broadcastify",
+        description: "Live police, fire, EMS, aircraft radio feeds worldwide.",
+        category: "radio",
+        icon: "Radio",
+        url: "https://broadcastify.com",
+        freeTier: "Unlimited",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "City, county, or agency name",
+        tip: "Search by state/county. Archives for recent incidents. Premium for extended archives.",
+    },
+    {
+        id: "marinetraffic-web",
+        name: "MarineTraffic (Web)",
+        description: "Ship tracking with photos, specs, port schedules. AIS-based global coverage.",
+        category: "radio",
+        icon: "Radio",
+        url: "https://marinetraffic.com",
+        freeTier: "Limited",
+        paidTier: "$15/month",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Vessel name, MMSI, or IMO",
+        tip: "Historical tracks show voyage history. Port arrivals/departures. Vessel specs and photos.",
+    },
+    {
+        id: "vesselfinder",
+        name: "VesselFinder",
+        description: "Alternative ship tracking. Often different coverage than MarineTraffic.",
+        category: "radio",
+        icon: "Radio",
+        url: "https://vesselfinder.com",
+        freeTier: "Unlimited (web)",
+        paidTier: "€49/month (API)",
+        requiresKey: false,
+        inputType: "text",
+        placeholder: "Vessel name, MMSI, or IMO",
+        tip: "Compare with MarineTraffic for verification. Photo database. Port calls history.",
+    },
 ];
 
 // ─── Component ────────────────────────────────────────────────
@@ -712,6 +1246,16 @@ export function OsintToolkit() {
             MessageSquare: <MessageSquare className="w-5 h-5" />,
             Radar: <Radar className="w-5 h-5" />,
             Database: <Database className="w-5 h-5" />,
+            Clock: <Clock className="w-5 h-5" />,
+            Newspaper: <Newspaper className="w-5 h-5" />,
+            BookOpen: <BookOpen className="w-5 h-5" />,
+            Radio: <Radio className="w-5 h-5" />,
+            Landmark: <Landmark className="w-5 h-5" />,
+            Home: <Home className="w-5 h-5" />,
+            FileText: <FileText className="w-5 h-5" />,
+            Code: <Code className="w-5 h-5" />,
+            MapPin: <MapPin className="w-5 h-5" />,
+            Video: <Video className="w-5 h-5" />,
         };
         return icons[iconName] || <Search className="w-5 h-5" />;
     };
@@ -737,7 +1281,7 @@ export function OsintToolkit() {
                     </h1>
                     <p className="text-gray-400 max-w-2xl">
                         The ultimate open-source intelligence collection. Find anyone,
-                        anything, anywhere. 50+ tools. All free tiers included.
+                        anything, anywhere. 70+ tools. All free tiers included.
                     </p>
                 </div>
             </header>
@@ -1057,6 +1601,90 @@ export function OsintToolkit() {
                                 <li>
                                     <strong className="text-gray-300">EmergingThreats</strong>{" "}
                                     rules for IDS/IPS detection
+                                </li>
+                            </ol>
+                        </div>
+                        <div className="bg-[#13131f] border border-gray-800 rounded-lg p-5">
+                            <h3 className="font-semibold text-cyan-400 mb-3">
+                                5. Document Investigation
+                            </h3>
+                            <ol className="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                                <li>
+                                    <strong className="text-gray-300">WikiLeaks</strong> for official
+                                    government leaks
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">DDoSecrets</strong> for
+                                    alternative leak archives
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">DocumentCloud</strong> for
+                                    journalist-uploaded documents
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">OCCRP Aleph</strong> for
+                                    cross-border investigations
+                                </li>
+                            </ol>
+                        </div>
+                        <div className="bg-[#13131f] border border-gray-800 rounded-lg p-5">
+                            <h3 className="font-semibold text-cyan-400 mb-3">
+                                6. Geolocation Verification
+                            </h3>
+                            <ol className="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                                <li>
+                                    <strong className="text-gray-300">Overpass Turbo</strong> for
+                                    infrastructure mapping
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">Wikimapia</strong> for
+                                    building names
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">Yandex Maps</strong> for
+                                    regions Google doesn't cover
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">SunCalc</strong> for shadow
+                                    analysis
+                                </li>
+                            </ol>
+                        </div>
+                        <div className="bg-[#13131f] border border-gray-800 rounded-lg p-5">
+                            <h3 className="font-semibold text-cyan-400 mb-3">
+                                7. Developer Identity
+                            </h3>
+                            <ol className="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                                <li>
+                                    <strong className="text-gray-300">GitHub</strong> search for
+                                    code and commit history
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">GitLab</strong> for
+                                    alternative code hosts
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">npm/Stack Overflow</strong>{" "}
+                                    for cross-platform linking
+                                </li>
+                            </ol>
+                        </div>
+                        <div className="bg-[#13131f] border border-gray-800 rounded-lg p-5">
+                            <h3 className="font-semibold text-cyan-400 mb-3">
+                                8. Asset & Property
+                            </h3>
+                            <ol className="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                                <li>
+                                    <strong className="text-gray-300">Zillow</strong> for US
+                                    property history
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">County assessor records</strong>{" "}
+                                    for ownership
+                                </li>
+                                <li>
+                                    <strong className="text-gray-300">OpenCorporates</strong> for
+                                    business property links
                                 </li>
                             </ol>
                         </div>
