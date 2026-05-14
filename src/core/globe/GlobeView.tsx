@@ -277,6 +277,7 @@ export default function GlobeView() {
                 selectionIndicator={false} timeline={false} vrButton={false}
                 baseLayer={false}
                 contextOptions={CONTEXT_OPTIONS}
+                style={VIEWER_STYLE}
             >
                 {viewerReady && PluginGlobeComponents}
             </Viewer>
