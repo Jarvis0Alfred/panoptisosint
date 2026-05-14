@@ -271,7 +271,6 @@ export default function GlobeView() {
                     const el = e?.cesiumElement;
                     if (el && el !== viewerRef.current && !el.isDestroyed()) handleViewerReady(el);
                 }}
-                full
                 animation={false} baseLayerPicker={false} fullscreenButton={false}
                 geocoder={false} homeButton={false} infoBox={false}
                 navigationHelpButton={false} sceneModePicker={false}
