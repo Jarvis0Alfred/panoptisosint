@@ -86,7 +86,7 @@ html, body {
 .cesium-viewer,
 .cesium-viewer-cesiumWidgetContainer,
 .cesium-widget,
-canvas.cesium-widget {
+.cesium-widget canvas {
   width: 100% !important;
   height: 100% !important;
   position: absolute !important;
@@ -1711,7 +1711,7 @@ body.is-resizing-sidebar .sidebar {
   .cesium-viewer,
   .cesium-viewer-cesiumWidgetContainer,
   .cesium-widget,
-  canvas.cesium-widget {
+  .cesium-widget canvas {
     width: 100% !important;
     height: 100% !important;
     position: absolute !important;
@@ -1986,7 +1986,7 @@ body.is-resizing-sidebar .sidebar {
   .cesium-viewer,
   .cesium-viewer-cesiumWidgetContainer,
   .cesium-widget,
-  canvas.cesium-widget {
+  .cesium-widget canvas {
     width: 100% !important;
     height: 100% !important;
     position: absolute !important;

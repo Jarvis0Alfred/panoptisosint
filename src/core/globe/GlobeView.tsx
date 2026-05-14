@@ -128,21 +128,42 @@ export default function GlobeView() {
     useEffect(() => {
         if (!viewerRef.current || viewerRef.current.isDestroyed()) return;
         const viewer = viewerRef.current;
+        const container = viewer.container as HTMLDivElement;
 
-        // Force an initial resize so Cesium fills the container
-        viewer.resize();
-
-        const handleResize = () => {
-            if (!viewer.isDestroyed()) viewer.resize();
+        // Aggressive resize strategy to ensure Cesium fills viewport
+        const forceResize = () => {
+            if (viewer.isDestroyed()) return;
+            // Explicitly set container pixel dimensions
+            container.style.width = `${window.innerWidth}px`;
+            container.style.height = `${window.innerHeight}px`;
+            viewer.resize();
         };
+
+        // Immediate resize
+        forceResize();
+
+        // Multiple delayed resizes to catch any layout shifts
+        const timeouts = [
+            setTimeout(forceResize, 100),
+            setTimeout(forceResize, 500),
+            setTimeout(forceResize, 1000),
+            setTimeout(forceResize, 2000),
+        ];
+
+        const handleResize = () => forceResize();
         window.addEventListener("resize", handleResize);
 
-        // Also trigger after a short delay to catch any CSS/layout shifts
-        const timeout = setTimeout(handleResize, 500);
+        // ResizeObserver for container size changes
+        let resizeObserver: ResizeObserver | null = null;
+        if (typeof ResizeObserver !== "undefined") {
+            resizeObserver = new ResizeObserver(() => forceResize());
+            resizeObserver.observe(container);
+        }
 
         return () => {
             window.removeEventListener("resize", handleResize);
-            clearTimeout(timeout);
+            timeouts.forEach(clearTimeout);
+            resizeObserver?.disconnect();
         };
     }, [viewerReady]);
 
@@ -265,7 +286,7 @@ export default function GlobeView() {
     }, [layers, viewerReady]);
 
     return (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0, overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "hidden" }}>
             <Viewer
                 ref={(e) => {
                     const el = e?.cesiumElement;
